@@ -1,3 +1,7 @@
 .gradle/
 build/
 .idea/
+
+# ignoring the whole data folder content
+data/*
+data/

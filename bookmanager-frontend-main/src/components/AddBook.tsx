@@ -59,6 +59,9 @@ const AddBook = () => {
 
             // calling the backend
             const newBook = await createBook(book);
+            if (!newBook) {
+                throw new Error("Create book failed");
+            }
 
             // updating the Redux store with the new book
             dispatch(addBook(newBook));

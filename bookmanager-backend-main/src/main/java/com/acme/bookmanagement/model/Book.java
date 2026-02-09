@@ -16,6 +16,14 @@ public class Book {
     private String author;
     private LocalDate publishedDate;
 
+    /**
+     * Default constructor for the Book class, it is required by JPA to be able to create 
+     * instances of the Book entity when retrieving data from the database.
+     */
+    protected Book() {
+       
+    }
+
     public Book(Long id, String title, String author, LocalDate publishedDate) {
         this.id = id;
         this.title = title;

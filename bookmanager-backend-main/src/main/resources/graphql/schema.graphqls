@@ -1,10 +1,14 @@
 type Query {
     findAllBooks: [Book!]!
+    findBookById(id: Int): Book
 }
 
-#type Mutation {
-#
-#}
+# We will be having a list of mutations actions that will be updating data in our database.
+# All elements are required strings.
+type Mutation {
+    createBook(title: String!, author: String!, publishedDate: String!): Book,
+    deleteBook(id: Int!) : Book
+}
 
 type Book {
     id: Int
