@@ -1,9 +1,12 @@
 package com.acme.bookmanagement.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 import java.time.LocalDate;
 
@@ -13,8 +16,11 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
-    private String author;
     private LocalDate publishedDate;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "author_id", nullable = false)
+    private Author author;
 
     /**
      * Default constructor for the Book class, it is required by JPA to be able to create 
@@ -24,7 +30,15 @@ public class Book {
        
     }
 
-    public Book(Long id, String title, String author, LocalDate publishedDate) {
+    /**
+     * Constructor for the Book class, it will be receiving the title, author and publishedDate as parameters,
+     * this will be used to create new instances of the Book entity when creating new books in
+     * @param id The ID of the book
+     * @param title The title of the book
+     * @param author The Author object representing the author of the book
+     * @param publishedDate The date when the book was published, as a LocalDate object
+     */
+    public Book(Long id, String title, Author author, LocalDate publishedDate) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -48,11 +62,16 @@ public class Book {
         this.title = title;
     }
 
-    public String getAuthor() {
+    public Author getAuthor() {
         return author;
     }
-
-    public void setAuthor(String author) {
+    
+    /**
+     * Changing from String to Author object,
+     * this will be linking the book to an author
+     * @param author the Author object to link to this book
+     */
+    public void setAuthor(Author author) {
         this.author = author;
     }
 

@@ -2,25 +2,27 @@ package com.acme.bookmanagement.service;
 
 import com.acme.bookmanagement.model.Book;
 import com.acme.bookmanagement.repository.BookRepository;
-
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import com.acme.bookmanagement.model.Author;
+import com.acme.bookmanagement.repository.AuthorRepository;
 
 @Service
 public class BookService {
     private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
 
     /**
      * Constructor for the BookService class, it will be receiving a BookRepository object as a parameter,
      * this will be used to interact with the database and perform CRUD operations on the Book entity
      * @param bookRepository
      */
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, AuthorRepository authorRepository) {
         this.bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
     }
 
     /**
@@ -75,6 +77,23 @@ public class BookService {
     }
 
     /**
+     * This will be responsible to get an Author object or if does 
+     * not exist, we create a new one with the name provided.
+     * @param name The name of the author
+     * @return The Author object
+     */
+    private Author getOrCreateAuthor(String name) {
+
+        // basic validation check 
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("author is required");
+        }
+    
+        return authorRepository.findByName(name.trim())
+                .orElseGet(() -> authorRepository.save(new Author(null, name.trim())));
+    }
+
+    /**
      *  This method will be responsible for creating a new book into the database
      *  we have a basic validation to check if all data is set and things arent empty
      *  before creating a new instance of book.
@@ -83,12 +102,15 @@ public class BookService {
      *  @param publishedDate The day the book was published
      *  @return The created Book object
      */
-    public Book createBook(String title, String author, String publishedDate)
+    public Book createBook(String title, String authorName, String publishedDate)
     {
         try
         {
             // getting the LocalDate from the string publishedDate
             LocalDate date = parsePublishedDate(publishedDate);
+
+            // Loading or creating the author with the name provided
+            Author author = getOrCreateAuthor(authorName);
 
             // creating a new book object with the data, and saving it to database
             Book book = new Book(null, title, author, date);

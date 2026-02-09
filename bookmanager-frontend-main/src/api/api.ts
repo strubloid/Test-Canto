@@ -2,6 +2,28 @@ import { Book } from '../features/bookReducer';
 
 const GRAPHQL_URL = 'http://localhost:8080/graphql';
 
+type CreateBookInput = {
+    id: number;
+    title: string;
+    author?: { name?: string } | null;
+    publishedDate: string;
+};
+
+/**
+ * This is a helper function to convert the data received that is a string
+ * and would get the object with the correct format that we are using in the frontend.
+ * @param data 
+ * @returns 
+ */
+const toBook = (data: CreateBookInput): Book => {
+    return {
+        id: data.id,
+        title: data.title,
+        authorName: data.author?.name ?? "",
+        publishedDate: data.publishedDate,
+    };
+}
+
 /**
  * This will be responsible for fetching all the book from the backend
  * and at the end returns an array of books or empty if there isn't any book in the database.
@@ -16,7 +38,7 @@ export const fetchBooks = async (): Promise<Book[]> => {
         findAllBooks {
           id
           title
-          author
+          author { name }
           publishedDate
         }
       }`,
@@ -34,7 +56,7 @@ export const fetchBooks = async (): Promise<Book[]> => {
         throw new Error("Invalid JSON data format");
     }
 
-    return data.findAllBooks;
+    return data.findAllBooks.map(toBook);
 };
 
 export const fetchBookById = async (id: number): Promise<Book> => {
@@ -46,7 +68,7 @@ export const fetchBookById = async (id: number): Promise<Book> => {
         findBookById {
           id
           title
-          author
+          author { name }
           publishedDate
         }
       }`,
@@ -67,7 +89,7 @@ export const fetchBookById = async (id: number): Promise<Book> => {
         throw new Error(data.errors[0].message);
     }
 
-    return data.findBookById;
+    return toBook(data.findBookById);
 };
 
 /**
@@ -82,14 +104,14 @@ export const createBook = async (book: Omit<Book, 'id'>): Promise<Book> => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            query: `mutation($title: String!, $author: String!, $publishedDate: String!) {
-        createBook(title: $title, author: $author, publishedDate: $publishedDate) {
-          id
-          title
-          author
-          publishedDate
-        }
-      }`,
+            query: `mutation($title: String!, $authorName: String!, $publishedDate: String!) {
+                createBook(title: $title, authorName: $authorName, publishedDate: $publishedDate) {
+                  id
+                  title
+                  author { name }
+                  publishedDate
+                }
+              }`,
             variables: book,
         }),
     });
@@ -105,7 +127,7 @@ export const createBook = async (book: Omit<Book, 'id'>): Promise<Book> => {
         throw new Error(data.errors[0].message);
     }
 
-    return data.createBook;
+    return toBook(data.createBook);
 };
 
 /**

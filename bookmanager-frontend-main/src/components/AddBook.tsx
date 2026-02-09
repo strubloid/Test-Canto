@@ -51,17 +51,13 @@ const AddBook = () => {
             let publishedDateString: string = publishedDate!.toISOString();
 
             // creating a book object to ensure we are sending the correct data
-            const book: Omit<Book, "id"> = {
+            const book = {
                 title,
-                author,
+                authorName: author,
                 publishedDate: publishedDateString,
             };
-
             // calling the backend
             const newBook = await createBook(book);
-            if (!newBook) {
-                throw new Error("Create book failed");
-            }
 
             // updating the Redux store with the new book
             dispatch(addBook(newBook));

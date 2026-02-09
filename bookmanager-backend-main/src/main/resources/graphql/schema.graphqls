@@ -7,13 +7,19 @@ type Query {
 # We will be having a list of mutations actions that will be updating data in our database.
 # All elements are required strings.
 type Mutation {
-    createBook(title: String!, author: String!, publishedDate: String!): Book,
+    createBook(title: String!, authorName: String!, publishedDate: String!): Book,
     deleteBook(id: Int!) : Book
 }
 
 type Book {
     id: Int
     title: String
-    author: String
+    author: Author       # Changing to be an Author object
     publishedDate: String
+}
+
+# Creating the Author type
+type Author {
+    id: Int
+    name: String
 }

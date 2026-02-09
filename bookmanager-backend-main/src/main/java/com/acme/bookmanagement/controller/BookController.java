@@ -24,10 +24,12 @@ public class BookController {
     /**
      * This method will be checking if is a valid book data before doing any action.
      */
-    private boolean isValidBookData(String title, String author, String publishedDate) {
-        return title != null && !title.isEmpty() &&  author != null && !author.isEmpty() && publishedDate != null && !publishedDate.isEmpty();
+    private boolean isValidBookData(String title, String authorName, String publishedDate) {
+        return title != null && !title.isEmpty() 
+                && authorName != null && !authorName.isEmpty() 
+                && publishedDate != null && !publishedDate.isEmpty();
     }
-
+    
     /**
      * This method will be called to retrieve all books from the database, it will return a list of all books available.
      * @return
@@ -63,19 +65,19 @@ public class BookController {
      * This method will be called to create a new book in the database, this will be checking
      * if all book data is valid before calling the service to create a new book.
      * @param title title of the book
-     * @param author author's name
+     * @param authorName author's name
      * @param publishedDate pulished date as a string
      * @return a book object with the data of the created book
      */
     @MutationMapping
-    public Book createBook(@Argument String title, @Argument String author, @Argument String publishedDate) {
+    public Book createBook(@Argument String title, @Argument String authorName, @Argument String publishedDate) {
 
         // Validation of the book data before creating a new book
-        if (!isValidBookData(title, author, publishedDate)) {
+        if (!isValidBookData(title, authorName, publishedDate)) {
             throw new IllegalArgumentException("Invalid book data");
         }
 
-        return bookService.createBook(title, author, publishedDate);
+        return bookService.createBook(title, authorName, publishedDate);
     }
 
     /**

@@ -1,9 +1,9 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface Book {
     id: number;
     title: string;
-    author: string;
+    authorName: string;
     publishedDate: string;
 }
 
@@ -31,6 +31,6 @@ const bookReducer = createSlice({
     },
 });
 
-export const {setBooks, addBook, deleteBook} = bookReducer.actions;
+export const { setBooks, addBook, deleteBook } = bookReducer.actions;
 
 export default bookReducer.reducer;

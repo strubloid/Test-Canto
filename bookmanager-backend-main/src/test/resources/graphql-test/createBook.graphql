@@ -2,7 +2,7 @@ mutation createBook($title: String!, $author: String!, $publishedDate: String!) 
     createBook(title: $title, author: $author, publishedDate: $publishedDate) {
         id
         title
-        author
+        author { name }
         publishedDate
     }
 }

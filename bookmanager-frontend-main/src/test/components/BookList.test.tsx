@@ -1,12 +1,12 @@
-import React from 'react';
-import { configureStore } from '@reduxjs/toolkit';
-import { RootState } from '../../store';
-import { render } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import BooksList from '../../components/BooksList';
-import booksReducer from '../../features/bookReducer';
+import React from "react";
+import { configureStore } from "@reduxjs/toolkit";
+import { RootState } from "../../store";
+import { render } from "@testing-library/react";
+import { Provider } from "react-redux";
+import BooksList from "../../components/BooksList";
+import booksReducer from "../../features/bookReducer";
 
-describe('BooksList', () => {
+describe("BooksList", () => {
     let store: ReturnType<typeof configureStore>;
     let initialState: RootState;
 
@@ -14,8 +14,8 @@ describe('BooksList', () => {
         initialState = {
             books: {
                 books: [
-                    { id: 1, title: 'Book One', author: 'Author One', publishedDate: '2021-01-01' },
-                    { id: 2, title: 'Book Two', author: 'Author Two', publishedDate: '2022-02-02' },
+                    { id: 1, title: "Book One", authorName: "Author One", publishedDate: "2021-01-01" },
+                    { id: 2, title: "Book Two", authorName: "Author Two", publishedDate: "2022-02-02" },
                 ],
             },
         };
@@ -27,15 +27,15 @@ describe('BooksList', () => {
         });
     });
 
-    it('should render a list of books', () => {
+    it("should render a list of books", () => {
         const { getByText } = render(
             <Provider store={store}>
                 <BooksList />
-            </Provider>
+            </Provider>,
         );
 
-        expect(getByText('Books')).toBeInTheDocument();
-        expect(getByText('Book One by Author One (Published: 2021-01-01)')).toBeInTheDocument();
-        expect(getByText('Book Two by Author Two (Published: 2022-02-02)')).toBeInTheDocument();
+        expect(getByText("Books")).toBeInTheDocument();
+        expect(getByText("Book One by Author One (Published: 2021-01-01)")).toBeInTheDocument();
+        expect(getByText("Book Two by Author Two (Published: 2022-02-02)")).toBeInTheDocument();
     });
 });
