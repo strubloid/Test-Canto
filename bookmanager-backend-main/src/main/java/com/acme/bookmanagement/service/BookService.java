@@ -128,6 +128,38 @@ public class BookService {
             throw new RuntimeException("Database error while deleting book", e);
         }
     }
+
+    /**
+     * This method will be the filtering of the book data by the published date
+     * it will be receiving a string of the date and it will be returning a list of books
+     * that match with that published date, if the date format is invalid it will throw an exception.
+     * @param publishedDate The published date as a string to filter the books
+     * @return A list of books that match with the published date, or an empty list if no books are found.
+     */
+    public List<Book> findByPublishedDate(String publishedDate) {
+        try 
+        {    
+            // getting the LocalDate from the string publishedDate
+            LocalDate date = parsePublishedDate(publishedDate);
+
+            // loading the books with the published date from the database
+            List<Book> books = bookRepository.findByPublishedDate(date);
+        
+            // validating if we dont have any book with that published date
+            if (books == null || books.isEmpty()) {
+                return List.of();
+            }
+        
+            return books;
+
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date format", e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Database error while retrieving books by published date", e);
+        }
+
+    }
+
     
 }
 

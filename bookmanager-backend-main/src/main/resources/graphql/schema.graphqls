@@ -1,6 +1,7 @@
 type Query {
     findAllBooks: [Book!]!
-    findBookById(id: Int): Book
+    findBookById(id: Int): Book,
+    findBooksByPublishedDate(publishedDate: String): [Book!]!
 }
 
 # We will be having a list of mutations actions that will be updating data in our database.

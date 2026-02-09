@@ -87,4 +87,42 @@ public class BookController {
     public Book deleteBook(@Argument Long id) {
         return bookService.deleteBook(id);
     }
+
+    /**
+     * This will be responsible for filtering the book data by the published date
+     * it will be receiving a string of the date and it will be returning a list of books
+     * that match with that published date.
+     * @param publishedDate The published date as a string to filter the books
+     * @return A list of books that match with the published date, or an empty list if no books are found.
+     */
+    @QueryMapping
+    public List<Book> findBooksByPublishedDate(@Argument String publishedDate) {
+
+        try {
+            // This will be validating before trying to filter the books
+            validatePublishedDate(publishedDate);
+
+            return bookService.findByPublishedDate(publishedDate);
+
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid published date format", e);
+        }
+    }
+
+    /**
+     * This method will be responsible for validating the published date string, it will be checking if the date format is valid.
+     * @param publishedDate The published date as a string to validate
+     */
+    private void validatePublishedDate(String publishedDate) {
+
+        // first validation of if isnt null or empty
+        if (publishedDate == null || publishedDate.isEmpty()) {
+            throw new IllegalArgumentException("Published date cannot be null or empty");
+        }
+
+        // second validation is for the date format, must exist a valid one
+        if(!publishedDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            throw new IllegalArgumentException("Published date must be in the format YYYY-MM-DD");
+        }
+    }
 }
