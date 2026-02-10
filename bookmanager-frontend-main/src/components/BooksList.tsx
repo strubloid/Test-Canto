@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { Book, deleteBook as deleteBookAction, updateBook as updateBookAction } from "../features/bookReducer";
 import { deleteBook, updateBook } from "../api/api";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import CollapseIndicator from "./CollapseIndicator";
 import "./BooksList.css";
 
@@ -41,15 +43,48 @@ const BooksList = () => {
     const [page, setPage] = useState(1);
     const pageSize = 10;
 
+    // We are normalizing the date string to ensure we are comparing only the date part
+    const normalizeDate = (value: string) => (value.length >= 10 ? value.substring(0, 10) : value);
+
+    // we are converting the date to a date key format to be able to compare it with the filter date
+    const toDateKey = (value: Date) => {
+        const year = value.getFullYear();
+        const month = String(value.getMonth() + 1).padStart(2, "0");
+        const day = String(value.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+    };
+
+    /**
+     * This will be responsible for getting all available dates from the list of books to be able to filter by them,
+     * we are using useMemo to optimize the performance and avoid recalculating the available dates on every render,
+     * it will only recalculate when the list of books changes.
+     */
+    const availableDates = React.useMemo(() => {
+        // we will store here the unique dates
+        const uniqueDates = new Set<string>();
+
+        // we loop through the list of books and we normalize the published date to get only the date part and we add it to the set of unique dates
+        books.forEach((book) => {
+            const normalized = normalizeDate(book.publishedDate);
+            if (normalized) {
+                uniqueDates.add(normalized);
+            }
+        });
+
+        // we are ensuring that we have the date with always time 00:00:00 to avoid any issue with the time part when we are comparing the dates in the filter
+        return Array.from(uniqueDates, (dateKey) => new Date(`${dateKey}T00:00:00`));
+    }, [books]);
+
+    // This is the current selected filter date
+    const selectedFilterDate = filterDate ? new Date(`${filterDate}T00:00:00`) : null;
+
     // We use the memory store for the filtering of the books
     const filteredBooks = React.useMemo<Book[]>(() => {
         // basic validation check
         if (!filterDate) {
             return books;
         }
-
-        // we ensure to get the correct part of the date string
-        const normalizeDate = (value: string) => (value.length >= 10 ? value.substring(0, 10) : value);
 
         return books.filter((book) => normalizeDate(book.publishedDate) === filterDate);
     }, [books, filterDate]);
@@ -280,7 +315,16 @@ const BooksList = () => {
                         <div className="books-filters">
                             <label className="books-filter" htmlFor={filterId}>
                                 <span className="books-filter-label">Filter by date</span>
-                                <input id={filterId} className="books-filter-input" type="date" value={filterDate} onChange={(event) => setFilterDate(event.target.value)} />
+                                <DatePicker
+                                    id={filterId}
+                                    className="books-filter-input"
+                                    placeholderText="dd/mm/yyyy"
+                                    dateFormat="dd/MM/yyyy"
+                                    showPopperArrow={false}
+                                    selected={selectedFilterDate}
+                                    includeDates={availableDates}
+                                    onChange={(date: Date | null) => setFilterDate(date ? toDateKey(date) : "")}
+                                />
                             </label>
                             <button className="books-filter-clear" type="button" onClick={() => setFilterDate("")} disabled={!filterDate}>
                                 Clear
