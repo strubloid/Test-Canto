@@ -30,6 +30,8 @@ const BooksList = () => {
     const [editTitle, setEditTitle] = useState("");
     const [editAuthor, setEditAuthor] = useState("");
     const [editPublishedDate, setEditPublishedDate] = useState("");
+    const filterId = useId();
+    const [filterDate, setFilterDate] = useState("");
 
     // sort key and direction state
     const [sortKey, setSortKey] = useState<SortKey>("title");
@@ -39,10 +41,23 @@ const BooksList = () => {
     const [page, setPage] = useState(1);
     const pageSize = 10;
 
+    // We use the memory store for the filtering of the books
+    const filteredBooks = React.useMemo<Book[]>(() => {
+        // basic validation check
+        if (!filterDate) {
+            return books;
+        }
+
+        // we ensure to get the correct part of the date string
+        const normalizeDate = (value: string) => (value.length >= 10 ? value.substring(0, 10) : value);
+
+        return books.filter((book) => normalizeDate(book.publishedDate) === filterDate);
+    }, [books, filterDate]);
+
     // getting the range of books ad the current page
     const sortedBooks = React.useMemo<Book[]>(() => {
         // getting a copy of the books array
-        const copy = [...books];
+        const copy = [...filteredBooks];
 
         // sorting the copy of the books array based on the sort key and direction
         copy.sort((bookA, bookB) => {
@@ -68,7 +83,7 @@ const BooksList = () => {
         });
 
         return copy;
-    }, [books, sortKey, sortDir]);
+    }, [filteredBooks, sortKey, sortDir]);
 
     // table configuration
     const totalPages = Math.max(1, Math.ceil(sortedBooks.length / pageSize));
@@ -77,14 +92,18 @@ const BooksList = () => {
     const showingFrom = sortedBooks.length === 0 ? 0 : startIndex + 1;
     const showingTo = Math.min(startIndex + pageSize, sortedBooks.length);
 
-    // this will be responsible for handling the start of the
-    // sort action by adding the first time page = 1
+    /**
+     * This will be responsible for resetting the page to 1 when we change the filter, sort key or sort direction,
+     * to ensure that we are not on a page that is greater than the total pages after filtering or sorting.
+     */
     useEffect(() => {
         setPage(1);
-    }, [sortKey, sortDir]);
+    }, [filterDate, sortKey, sortDir]);
 
-    // this will be responsible for handling the case of changing the page and we are on a page
-    // that is greater than the total pages, so we set the page to the total pages.
+    /**
+     * This will be responsible for handling the case when we are changing the page and we are
+     * on a page that is greater than the total pages,
+     */
     useEffect(() => {
         // only update the page if the current page is greater than
         // the total of pages
@@ -93,9 +112,11 @@ const BooksList = () => {
         }
     }, [page, totalPages]);
 
-    // This will be used to reset the edit state when we change the page, sort key or sort direction,
-    // to ensure that we are not editing a book and then changing the page or sorting and we are still in the edit mode for a book
-    // that is not visible anymore.
+    /**
+     * This will be responsible for resetting the edit state when we change the page, sort key or sort direction,
+     * to ensure that we are not editing a book and then changing the page or sorting and we are still in the edit mode for a book
+     * that is not visible anymore.
+     */
     useEffect(() => {
         if (editingId !== null) {
             setEditingId(null);
@@ -103,7 +124,7 @@ const BooksList = () => {
             setEditAuthor("");
             setEditPublishedDate("");
         }
-    }, [page, sortKey, sortDir]);
+    }, [filterDate, page, sortKey, sortDir]);
 
     /**
      * This will be responsible for handling the sort action by
@@ -169,11 +190,18 @@ const BooksList = () => {
         return value.length >= 10 ? value.substring(0, 10) : value;
     };
 
+    /**
+     * This will be responsible for handling the start of the edit action by setting the edit state with the book details
+     * to be able to edit the book in the table row.
+     * @param book the book to edit
+     */
     const startEdit = (book: Book) => {
+        // we set the edit state with the book details to be able to edit the book in the table row
         setEditingId(book.id);
         setEditTitle(book.title);
         setEditAuthor(book.authorName);
 
+        // we use the toInputDate function to format the date string to show only the date part in the input field
         setEditPublishedDate(toInputDate(book.publishedDate));
     };
 
@@ -247,6 +275,15 @@ const BooksList = () => {
                         <p className="books-subtitle">
                             Showing {showingFrom}-{showingTo} of {sortedBooks.length}
                         </p>
+                        <div className="books-filters">
+                            <label className="books-filter" htmlFor={filterId}>
+                                <span className="books-filter-label">Filter by date</span>
+                                <input id={filterId} className="books-filter-input" type="date" value={filterDate} onChange={(event) => setFilterDate(event.target.value)} />
+                            </label>
+                            <button className="books-filter-clear" type="button" onClick={() => setFilterDate("")} disabled={!filterDate}>
+                                Clear
+                            </button>
+                        </div>
                     </div>
                 </div>
 

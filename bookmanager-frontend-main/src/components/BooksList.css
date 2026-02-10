@@ -37,6 +37,64 @@
     color: var(--muted);
 }
 
+.books-filters {
+    margin-top: 0.85rem;
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.books-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+.books-filter-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.books-filter-input {
+    border: 1px solid rgba(148, 163, 184, 0.6);
+    border-radius: 0.65rem;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.9rem;
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.books-filter-input:focus {
+    outline: none;
+    border-color: rgba(29, 78, 216, 0.6);
+    box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.12);
+}
+
+.books-filter-clear {
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    background: #fff;
+    color: var(--ink);
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.6rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.books-filter-clear:hover {
+    border-color: rgba(29, 78, 216, 0.6);
+    color: var(--accent);
+}
+
+.books-filter-clear:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
 .books-collapse {
     display: grid;
     grid-template-rows: 0fr;
