@@ -4,6 +4,7 @@ import { addBook } from "../features/bookReducer";
 import { createBook } from "../api/api";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import CollapseIndicator from "./CollapseIndicator";
 import "./AddBook.css";
 
 const AddBook = () => {
@@ -83,9 +84,7 @@ const AddBook = () => {
                     <div>
                         <button type="button" className="add-book-toggle" aria-expanded={isOpen} aria-controls={contentId} onClick={() => setIsOpen((prev) => !prev)}>
                             <span className="add-book-title">Add Book</span>
-                            <span className={`add-book-chevron ${isOpen ? "is-open" : ""}`} aria-hidden="true">
-                                v
-                            </span>
+                            <CollapseIndicator isOpen={isOpen} />
                         </button>
                         <p className="add-book-subtitle">Create a new entry for your library.</p>
                     </div>

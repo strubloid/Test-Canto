@@ -2,6 +2,7 @@ import React, { useEffect, useId, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { Book } from "../features/bookReducer";
+import CollapseIndicator from "./CollapseIndicator";
 import "./BooksList.css";
 
 // defining the type for avaiable values to be sorted in the book list.
@@ -142,9 +143,7 @@ const BooksList = () => {
                     <div>
                         <button type="button" className="books-toggle" aria-expanded={isOpen} aria-controls={contentId} onClick={() => setIsOpen((prev) => !prev)}>
                             <span className="books-title">Books</span>
-                            <span className={`books-chevron ${isOpen ? "is-open" : ""}`} aria-hidden="true">
-                                v
-                            </span>
+                            <CollapseIndicator isOpen={isOpen} />
                         </button>
                         <p className="books-subtitle">
                             Showing {showingFrom}-{showingTo} of {sortedBooks.length}
