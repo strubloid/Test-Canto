@@ -2,13 +2,10 @@ import React, { useId, useState } from "react";
 import { useDispatch } from "react-redux";
 import { addBook } from "../features/bookReducer";
 import { createBook } from "../api/api";
-import DatePicker, { registerLocale } from "react-datepicker";
-import { enGB } from "date-fns/locale";
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import CollapseIndicator from "./CollapseIndicator";
 import "./AddBook.css";
-
-registerLocale("en-GB", enGB);
 
 const AddBook = () => {
     const dispatch = useDispatch();
@@ -110,7 +107,6 @@ const AddBook = () => {
                                     className="add-book-input"
                                     placeholderText="dd/mm/yyyy"
                                     dateFormat="dd/MM/yyyy"
-                                    locale="en-GB"
                                     showPopperArrow={false}
                                     selected={publishedDate}
                                     onChange={(date: Date | null) => setPublishedDate(date)}
