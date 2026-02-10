@@ -81,6 +81,30 @@ public class BookController {
     }
 
     /**
+     * This method will be called to update an existing book at the book list 
+     * @param id ID of the book to update
+     * @param title updated title of the book
+     * @param authorName updated author's name
+     * @param publishedDate updated published date as a string
+     * @return the updated book object
+     */
+    @MutationMapping
+    public Book updateBook(@Argument Long id, @Argument String title, @Argument String authorName, @Argument String publishedDate) {
+
+        // basic validation if the id is required
+        if (id == null) {
+            throw new IllegalArgumentException("Book id is required");
+        }
+
+        // also the basic validation of a book data, before updating it
+        if (!isValidBookData(title, authorName, publishedDate)) {
+            throw new IllegalArgumentException("Invalid book data");
+        }
+
+        return bookService.updateBook(id, title, authorName, publishedDate);
+    }
+
+    /**
      * This method will call the book service to delete a book by its ID.
      * @param id ID of the book to delete
      * @return The deleted book object, or null if the book was not found.

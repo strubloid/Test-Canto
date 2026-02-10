@@ -125,6 +125,45 @@ public class BookService {
     }
 
     /**
+     * This is similar to the add book but this one we will be editing it
+     * we find the book by its ID and then we update it, f we cant find the book
+     * we throw an exception, as each edited book must to have an ID to be able to update it.
+     * 
+     * @param id The ID of the book to update
+     * @param title The updated title of the book
+     * @param authorName The updated author name
+     * @param publishedDate The updated published date
+     * @return The updated Book object
+     */
+    public Book updateBook(Long id, String title, String authorName, String publishedDate) {
+        try 
+        {
+            // we try to find the book first
+            Book bookToUpdate = findById(id);
+
+            // checking if the book exist
+            if(bookToUpdate == null) {
+                throw new IllegalArgumentException("Book not found");
+            }
+
+            // we get the date and author object with the updated data
+            LocalDate date = parsePublishedDate(publishedDate);
+            Author author = getOrCreateAuthor(authorName);
+
+            // updating the book data
+            bookToUpdate.setTitle(title);
+            bookToUpdate.setAuthor(author);
+            bookToUpdate.setPublishedDate(date);
+
+            return bookRepository.save(bookToUpdate);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date format", e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Database error while updating book", e);
+        }
+    }
+
+    /**
      * This method will be responsible for deleting a book from
      * the database by its ID, it will check if exist the book before
      * trying to delete it.

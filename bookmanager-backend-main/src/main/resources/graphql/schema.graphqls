@@ -8,6 +8,7 @@ type Query {
 # All elements are required strings.
 type Mutation {
     createBook(title: String!, authorName: String!, publishedDate: String!): Book,
+    updateBook(id: Int!, title: String!, authorName: String!, publishedDate: String!): Book,
     deleteBook(id: Int!) : Book
 }
 
