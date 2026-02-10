@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useId, useState } from "react";
 import { useDispatch } from "react-redux";
 import { addBook } from "../features/bookReducer";
 import { createBook } from "../api/api";
@@ -8,6 +8,8 @@ import "./AddBook.css";
 
 const AddBook = () => {
     const dispatch = useDispatch();
+    const contentId = useId();
+    const [isOpen, setIsOpen] = useState(true);
     const [title, setTitle] = useState("");
     const [author, setAuthor] = useState("");
     const [publishedDate, setPublishedDate] = useState<Date | null>(null);
@@ -78,27 +80,43 @@ const AddBook = () => {
         <section className="add-book">
             <div className="add-book-body">
                 <div className="add-book-header">
-                    <h2 className="add-book-title">Add Book</h2>
-                    <p className="add-book-subtitle">Create a new entry for your library.</p>
+                    <div>
+                        <button type="button" className="add-book-toggle" aria-expanded={isOpen} aria-controls={contentId} onClick={() => setIsOpen((prev) => !prev)}>
+                            <span className="add-book-title">Add Book</span>
+                            <span className={`add-book-chevron ${isOpen ? "is-open" : ""}`} aria-hidden="true">
+                                v
+                            </span>
+                        </button>
+                        <p className="add-book-subtitle">Create a new entry for your library.</p>
+                    </div>
                 </div>
 
-                <div className="add-book-fields">
-                    <div className="add-book-field">
-                        <label className="add-book-label">Title</label>
-                        <input className="add-book-input" type="text" placeholder="e.g. The Great Gatsby" value={title} onChange={(e) => setTitle(e.target.value)} />
-                    </div>
-                    <div className="add-book-field">
-                        <label className="add-book-label">Author</label>
-                        <input className="add-book-input" type="text" placeholder="e.g. F. Scott Fitzgerald" value={author} onChange={(e) => setAuthor(e.target.value)} />
-                    </div>
-                    <div className="add-book-field">
-                        <label className="add-book-label">Published Date</label>
-                        <DatePicker className="add-book-input" placeholderText="Select a date" selected={publishedDate} onChange={(date: Date | null) => setPublishedDate(date)} />
-                    </div>
-                    <div className="add-book-field add-book-action">
-                        <button className="add-book-button" onClick={handleAddBook}>
-                            Add Book
-                        </button>
+                <div id={contentId} className={`add-book-collapse ${isOpen ? "is-open" : ""}`}>
+                    <div className="add-book-collapse-inner">
+                        <div className="add-book-fields">
+                            <div className="add-book-field">
+                                <label className="add-book-label">Title</label>
+                                <input className="add-book-input" type="text" placeholder="e.g. The Great Gatsby" value={title} onChange={(e) => setTitle(e.target.value)} />
+                            </div>
+                            <div className="add-book-field">
+                                <label className="add-book-label">Author</label>
+                                <input className="add-book-input" type="text" placeholder="e.g. F. Scott Fitzgerald" value={author} onChange={(e) => setAuthor(e.target.value)} />
+                            </div>
+                            <div className="add-book-field">
+                                <label className="add-book-label">Published Date</label>
+                                <DatePicker
+                                    className="add-book-input"
+                                    placeholderText="Select a date"
+                                    selected={publishedDate}
+                                    onChange={(date: Date | null) => setPublishedDate(date)}
+                                />
+                            </div>
+                            <div className="add-book-field add-book-action">
+                                <button className="add-book-button" onClick={handleAddBook}>
+                                    Add Book
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

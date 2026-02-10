@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useId, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { Book } from "../features/bookReducer";
@@ -21,6 +21,8 @@ type SortKey = "id" | "title" | "authorName" | "publishedDate";
 const BooksList = () => {
     // we get the list of books from the Redux store
     const books = useSelector((state: RootState) => state.books.books);
+    const contentId = useId();
+    const [isOpen, setIsOpen] = useState(true);
 
     // sort key and direction state
     const [sortKey, setSortKey] = useState<SortKey>("title");
@@ -138,77 +140,91 @@ const BooksList = () => {
             <div className="books-body">
                 <div className="books-header">
                     <div>
-                        <h2 className="books-title">Books</h2>
+                        <button type="button" className="books-toggle" aria-expanded={isOpen} aria-controls={contentId} onClick={() => setIsOpen((prev) => !prev)}>
+                            <span className="books-title">Books</span>
+                            <span className={`books-chevron ${isOpen ? "is-open" : ""}`} aria-hidden="true">
+                                v
+                            </span>
+                        </button>
                         <p className="books-subtitle">
                             Showing {showingFrom}-{showingTo} of {sortedBooks.length}
                         </p>
                     </div>
                 </div>
 
-                <div className="books-table-wrap">
-                    <table className="books-table">
-                        <thead>
-                            <tr>
-                                <th scope="col" aria-sort={sortKey === "id" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-                                    <button type="button" className="books-sort" onClick={() => sortingBy("id")}>
-                                        ID{sortIndicator("id")}
-                                    </button>
-                                </th>
-                                <th scope="col" aria-sort={sortKey === "title" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-                                    <button type="button" className="books-sort" onClick={() => sortingBy("title")}>
-                                        Title{sortIndicator("title")}
-                                    </button>
-                                </th>
-                                <th scope="col" aria-sort={sortKey === "authorName" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-                                    <button type="button" className="books-sort" onClick={() => sortingBy("authorName")}>
-                                        Author{sortIndicator("authorName")}
-                                    </button>
-                                </th>
-                                <th scope="col" aria-sort={sortKey === "publishedDate" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-                                    <button type="button" className="books-sort" onClick={() => sortingBy("publishedDate")}>
-                                        Published{sortIndicator("publishedDate")}
-                                    </button>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {pageBooks.length === 0 ? (
-                                <tr>
-                                    <td colSpan={4} className="books-empty">
-                                        No books yet. Add your first one above.
-                                    </td>
-                                </tr>
-                            ) : (
-                                pageBooks.map((book) => (
-                                    <tr key={book.id}>
-                                        <td>{book.id}</td>
-                                        <td>{book.title}</td>
-                                        <td>{book.authorName}</td>
-                                        <td>{formatDate(book.publishedDate)}</td>
+                <div id={contentId} className={`books-collapse ${isOpen ? "is-open" : ""}`}>
+                    <div className="books-collapse-inner">
+                        <div className="books-table-wrap">
+                            <table className="books-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" aria-sort={sortKey === "id" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+                                            <button type="button" className="books-sort" onClick={() => sortingBy("id")}>
+                                                ID{sortIndicator("id")}
+                                            </button>
+                                        </th>
+                                        <th scope="col" aria-sort={sortKey === "title" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+                                            <button type="button" className="books-sort" onClick={() => sortingBy("title")}>
+                                                Title{sortIndicator("title")}
+                                            </button>
+                                        </th>
+                                        <th scope="col" aria-sort={sortKey === "authorName" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+                                            <button type="button" className="books-sort" onClick={() => sortingBy("authorName")}>
+                                                Author{sortIndicator("authorName")}
+                                            </button>
+                                        </th>
+                                        <th scope="col" aria-sort={sortKey === "publishedDate" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+                                            <button type="button" className="books-sort" onClick={() => sortingBy("publishedDate")}>
+                                                Published{sortIndicator("publishedDate")}
+                                            </button>
+                                        </th>
                                     </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-
-                {totalPages > 1 && (
-                    <nav className="books-pagination" aria-label="Books pagination">
-                        <button className="books-page" onClick={() => setPage(page - 1)} type="button" disabled={page === 1}>
-                            Prev
-                        </button>
-                        <div className="books-page-list">
-                            {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
-                                <button key={pageNumber} className={`books-page ${pageNumber === page ? "is-active" : ""}`} onClick={() => setPage(pageNumber)} type="button">
-                                    {pageNumber}
-                                </button>
-                            ))}
+                                </thead>
+                                <tbody>
+                                    {pageBooks.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={4} className="books-empty">
+                                                No books yet. Add your first one above.
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        pageBooks.map((book) => (
+                                            <tr key={book.id}>
+                                                <td>{book.id}</td>
+                                                <td>{book.title}</td>
+                                                <td>{book.authorName}</td>
+                                                <td>{formatDate(book.publishedDate)}</td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
                         </div>
-                        <button className="books-page" onClick={() => setPage(page + 1)} type="button" disabled={page === totalPages}>
-                            Next
-                        </button>
-                    </nav>
-                )}
+
+                        {totalPages > 1 && (
+                            <nav className="books-pagination" aria-label="Books pagination">
+                                <button className="books-page" onClick={() => setPage(page - 1)} type="button" disabled={page === 1}>
+                                    Prev
+                                </button>
+                                <div className="books-page-list">
+                                    {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+                                        <button
+                                            key={pageNumber}
+                                            className={`books-page ${pageNumber === page ? "is-active" : ""}`}
+                                            onClick={() => setPage(pageNumber)}
+                                            type="button"
+                                        >
+                                            {pageNumber}
+                                        </button>
+                                    ))}
+                                </div>
+                                <button className="books-page" onClick={() => setPage(page + 1)} type="button" disabled={page === totalPages}>
+                                    Next
+                                </button>
+                            </nav>
+                        )}
+                    </div>
+                </div>
             </div>
         </section>
     );
