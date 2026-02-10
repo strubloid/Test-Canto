@@ -105,7 +105,9 @@ const AddBook = () => {
                                 <label className="add-book-label">Published Date</label>
                                 <DatePicker
                                     className="add-book-input"
-                                    placeholderText="Select a date"
+                                    placeholderText="dd/mm/yyyy"
+                                    dateFormat="dd/MM/yyyy"
+                                    showPopperArrow={false}
                                     selected={publishedDate}
                                     onChange={(date: Date | null) => setPublishedDate(date)}
                                 />
