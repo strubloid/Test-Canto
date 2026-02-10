@@ -1,8 +1,8 @@
 import React, { useEffect, useId, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { Book, deleteBook as deleteBookAction } from "../features/bookReducer";
-import { deleteBook } from "../api/api";
+import { Book, deleteBook as deleteBookAction, updateBook as updateBookAction } from "../features/bookReducer";
+import { deleteBook, updateBook } from "../api/api";
 import CollapseIndicator from "./CollapseIndicator";
 import "./BooksList.css";
 
@@ -26,6 +26,10 @@ const BooksList = () => {
     const books = useSelector((state: RootState) => state.books.books);
     const contentId = useId();
     const [isOpen, setIsOpen] = useState(true);
+    const [editingId, setEditingId] = useState<number | null>(null);
+    const [editTitle, setEditTitle] = useState("");
+    const [editAuthor, setEditAuthor] = useState("");
+    const [editPublishedDate, setEditPublishedDate] = useState("");
 
     // sort key and direction state
     const [sortKey, setSortKey] = useState<SortKey>("title");
@@ -89,6 +93,18 @@ const BooksList = () => {
         }
     }, [page, totalPages]);
 
+    // This will be used to reset the edit state when we change the page, sort key or sort direction,
+    // to ensure that we are not editing a book and then changing the page or sorting and we are still in the edit mode for a book
+    // that is not visible anymore.
+    useEffect(() => {
+        if (editingId !== null) {
+            setEditingId(null);
+            setEditTitle("");
+            setEditAuthor("");
+            setEditPublishedDate("");
+        }
+    }, [page, sortKey, sortDir]);
+
     /**
      * This will be responsible for handling the sort action by
      * changing the sort key and the direction of the sort based on the current state.
@@ -138,6 +154,40 @@ const BooksList = () => {
         return result;
     };
 
+    // const toInputDate = (value: string) => {
+    //     if (!value) {
+    //         return "";
+    //     }
+
+    //     return value.length >= 10 ? value.substring(0, 10) : value;
+    // };
+
+    const startEdit = (book: Book) => {
+        setEditingId(book.id);
+        setEditTitle(book.title);
+        setEditAuthor(book.authorName);
+
+        // checking if the date exists
+        if (!book.publishedDate) {
+            setEditPublishedDate("");
+        } else {
+            // getting the date object and adding to the publish date
+            const publishedDateData = new Date(book.publishedDate!);
+            setEditPublishedDate(publishedDateData.toISOString());
+        }
+    };
+
+    /**
+     * This will be responsible for handling the cancel action
+     * of the edit by resetting the edit state to the default values.
+     */
+    const cancelEdit = () => {
+        setEditingId(null);
+        setEditTitle("");
+        setEditAuthor("");
+        setEditPublishedDate("");
+    };
+
     /**
      * This will be responsible for handling the delete action by calling the backend to delete the book
      * and then dispatching the action to delete the book from the Redux store.
@@ -150,6 +200,35 @@ const BooksList = () => {
             dispatch(deleteBookAction(id));
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to delete book";
+            alert(message);
+        }
+    };
+
+    /**
+     * This will be responsible for handling the save action of the edit by
+     * calling the backend to update the book and then dispatching the action to update the book
+     * in the Redux store.
+     * @param id
+     * @returns
+     */
+    const saveEdit = async (id: number) => {
+        try {
+            if (!editTitle || !editAuthor || !editPublishedDate) {
+                alert("Please fill in all fields before saving.");
+                return;
+            }
+
+            const updatedBook = await updateBook({
+                id,
+                title: editTitle.trim(),
+                authorName: editAuthor.trim(),
+                publishedDate: editPublishedDate,
+            });
+
+            dispatch(updateBookAction(updatedBook));
+            cancelEdit();
+        } catch (error) {
+            const message = error instanceof Error ? error.message : "Failed to update book";
             alert(message);
         }
     };
@@ -213,9 +292,57 @@ const BooksList = () => {
                                                 <td>{book.authorName}</td>
                                                 <td>{formatDate(book.publishedDate)}</td>
                                                 <td className="books-actions">
-                                                    <button className="books-delete" type="button" onClick={() => deleteButtonAction(book.id)}>
-                                                        Delete
-                                                    </button>
+                                                    {editingId === book.id ? (
+                                                        <div className="books-editor">
+                                                            <label className="books-editor-label" htmlFor={`edit-title-${book.id}`}>
+                                                                Title
+                                                            </label>
+                                                            <input
+                                                                id={`edit-title-${book.id}`}
+                                                                className="books-editor-input"
+                                                                type="text"
+                                                                value={editTitle}
+                                                                onChange={(event) => setEditTitle(event.target.value)}
+                                                            />
+                                                            <label className="books-editor-label" htmlFor={`edit-author-${book.id}`}>
+                                                                Author
+                                                            </label>
+                                                            <input
+                                                                id={`edit-author-${book.id}`}
+                                                                className="books-editor-input"
+                                                                type="text"
+                                                                value={editAuthor}
+                                                                onChange={(event) => setEditAuthor(event.target.value)}
+                                                            />
+                                                            <label className="books-editor-label" htmlFor={`edit-date-${book.id}`}>
+                                                                Published
+                                                            </label>
+                                                            <input
+                                                                id={`edit-date-${book.id}`}
+                                                                className="books-editor-input"
+                                                                type="date"
+                                                                value={editPublishedDate}
+                                                                onChange={(event) => setEditPublishedDate(event.target.value)}
+                                                            />
+                                                            <div className="books-editor-actions">
+                                                                <button className="books-save" type="button" onClick={() => saveEdit(book.id)}>
+                                                                    Save
+                                                                </button>
+                                                                <button className="books-cancel" type="button" onClick={cancelEdit}>
+                                                                    Cancel
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="books-actions-buttons">
+                                                            <button className="books-edit" type="button" onClick={() => startEdit(book)} disabled={editingId !== null}>
+                                                                Edit
+                                                            </button>
+                                                            <button className="books-delete" type="button" onClick={() => deleteButtonAction(book.id)}>
+                                                                Delete
+                                                            </button>
+                                                        </div>
+                                                    )}
                                                 </td>
                                             </tr>
                                         ))

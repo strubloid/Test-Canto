@@ -50,10 +50,10 @@ export const fetchBooks = async (): Promise<Book[]> => {
         throw new Error(`Failed to fetch books: ${response.status} ${response.statusText}`);
     }
 
-    // loading and checking if the data is a valid json
-    const { data } = await response.json();
-    if (!data || !data.findAllBooks) {
-        throw new Error("Invalid JSON data format");
+    // getting data and checking if we have some errors in the response
+    const { data, errors } = await response.json();
+    if (errors && errors.length > 0) {
+        throw new Error(errors[0].message);
     }
 
     return data.findAllBooks.map(toBook);
@@ -81,12 +81,10 @@ export const fetchBookById = async (id: number): Promise<Book> => {
         throw new Error(`Failed to fetch book: ${response.status} ${response.statusText}`);
     }
 
-    // loading and checking if the data is a valid json
-    const { data } = await response.json();
-
-    // checking if we have errors in the response
-    if (data.errors && data.errors.length > 0) {
-        throw new Error(data.errors[0].message);
+    // getting data and checking if we have some errors in the response
+    const { data, errors } = await response.json();
+    if (errors && errors.length > 0) {
+        throw new Error(errors[0].message);
     }
 
     return toBook(data.findBookById);
@@ -122,12 +120,48 @@ export const createBook = async (book: Omit<Book, 'id'>): Promise<Book> => {
     }
 
     // so we can get the json data and check if we have errors in the response
-    const { data } = await response.json();
-    if (data.errors && data.errors.length > 0) {
-        throw new Error(data.errors[0].message);
+    const { data, errors } = await response.json();
+    if (errors && errors.length > 0) {
+        throw new Error(errors[0].message);
     }
 
     return toBook(data.createBook);
+};
+
+/**
+ * This will be responsible at the bookingList component for updating an existing book in the backend
+ * @param book Book object with updated data
+ * @returns Updated book
+ */
+export const updateBook = async (book: Book): Promise<Book> => {
+    const response = await fetch(GRAPHQL_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            query: `mutation($id: Int!, $title: String!, $authorName: String!, $publishedDate: String!) {
+                updateBook(id: $id, title: $title, authorName: $authorName, publishedDate: $publishedDate) {
+                  id
+                  title
+                  author { name }
+                  publishedDate
+                }
+              }`,
+            variables: book,
+        }),
+    });
+
+    // basic check if we had a response from the backend
+    if (!response.ok) {
+        throw new Error(`Failed to update book: ${response.status} ${response.statusText}`);
+    }
+
+    // getting the data and checking if we have some errors in the response
+    const { data, errors } = await response.json();
+    if (errors && errors.length > 0) {
+        throw new Error(errors[0].message);
+    }
+
+    return toBook(data.updateBook);
 };
 
 /**

@@ -25,12 +25,18 @@ const bookReducer = createSlice({
         addBook(state, action: PayloadAction<Book>) {
             state.books.push(action.payload);
         },
+        updateBook(state, action: PayloadAction<Book>) {
+            const index = state.books.findIndex((book) => book.id === action.payload.id);
+            if (index !== -1) {
+                state.books[index] = action.payload;
+            }
+        },
         deleteBook(state, action: PayloadAction<number>) {
             state.books = state.books.filter(book => book.id !== action.payload);
         },
     },
 });
 
-export const { setBooks, addBook, deleteBook } = bookReducer.actions;
+export const { setBooks, addBook, updateBook, deleteBook } = bookReducer.actions;
 
 export default bookReducer.reducer;
