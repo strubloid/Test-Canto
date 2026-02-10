@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { Book } from "../features/bookReducer";
+import "./BooksList.css";
 
 // defining the type for avaiable values to be sorted in the book list.
 type SortKey = "id" | "title" | "authorName" | "publishedDate";
@@ -133,38 +134,38 @@ const BooksList = () => {
     };
 
     return (
-        <div className="card table-card border-0">
-            <div className="card-body">
-                <div className="d-flex flex-column flex-md-row align-items-start justify-content-between gap-2 mb-3">
+        <section className="books">
+            <div className="books-body">
+                <div className="books-header">
                     <div>
-                        <h2 className="h4 mb-1">Books</h2>
-                        <p className="text-muted mb-0">
+                        <h2 className="books-title">Books</h2>
+                        <p className="books-subtitle">
                             Showing {showingFrom}-{showingTo} of {sortedBooks.length}
                         </p>
                     </div>
                 </div>
 
-                <div className="table-responsive">
-                    <table className="table table-hover align-middle">
+                <div className="books-table-wrap">
+                    <table className="books-table">
                         <thead>
                             <tr>
                                 <th scope="col" aria-sort={sortKey === "id" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-                                    <button type="button" className="btn btn-sm btn-link p-0 text-decoration-none fw-semibold" onClick={() => sortingBy("id")}>
+                                    <button type="button" className="books-sort" onClick={() => sortingBy("id")}>
                                         ID{sortIndicator("id")}
                                     </button>
                                 </th>
                                 <th scope="col" aria-sort={sortKey === "title" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-                                    <button type="button" className="btn btn-sm btn-link p-0 text-decoration-none fw-semibold" onClick={() => sortingBy("title")}>
+                                    <button type="button" className="books-sort" onClick={() => sortingBy("title")}>
                                         Title{sortIndicator("title")}
                                     </button>
                                 </th>
                                 <th scope="col" aria-sort={sortKey === "authorName" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-                                    <button type="button" className="btn btn-sm btn-link p-0 text-decoration-none fw-semibold" onClick={() => sortingBy("authorName")}>
+                                    <button type="button" className="books-sort" onClick={() => sortingBy("authorName")}>
                                         Author{sortIndicator("authorName")}
                                     </button>
                                 </th>
                                 <th scope="col" aria-sort={sortKey === "publishedDate" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-                                    <button type="button" className="btn btn-sm btn-link p-0 text-decoration-none fw-semibold" onClick={() => sortingBy("publishedDate")}>
+                                    <button type="button" className="books-sort" onClick={() => sortingBy("publishedDate")}>
                                         Published{sortIndicator("publishedDate")}
                                     </button>
                                 </th>
@@ -173,7 +174,7 @@ const BooksList = () => {
                         <tbody>
                             {pageBooks.length === 0 ? (
                                 <tr>
-                                    <td colSpan={4} className="text-center text-muted py-4">
+                                    <td colSpan={4} className="books-empty">
                                         No books yet. Add your first one above.
                                     </td>
                                 </tr>
@@ -192,30 +193,24 @@ const BooksList = () => {
                 </div>
 
                 {totalPages > 1 && (
-                    <nav className="d-flex justify-content-end">
-                        <ul className="pagination mb-0">
-                            <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
-                                <button className="page-link" onClick={() => setPage(page - 1)} type="button">
-                                    Prev
-                                </button>
-                            </li>
+                    <nav className="books-pagination" aria-label="Books pagination">
+                        <button className="books-page" onClick={() => setPage(page - 1)} type="button" disabled={page === 1}>
+                            Prev
+                        </button>
+                        <div className="books-page-list">
                             {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
-                                <li key={pageNumber} className={`page-item ${pageNumber === page ? "active" : ""}`}>
-                                    <button className="page-link" onClick={() => setPage(pageNumber)} type="button">
-                                        {pageNumber}
-                                    </button>
-                                </li>
-                            ))}
-                            <li className={`page-item ${page === totalPages ? "disabled" : ""}`}>
-                                <button className="page-link" onClick={() => setPage(page + 1)} type="button">
-                                    Next
+                                <button key={pageNumber} className={`books-page ${pageNumber === page ? "is-active" : ""}`} onClick={() => setPage(pageNumber)} type="button">
+                                    {pageNumber}
                                 </button>
-                            </li>
-                        </ul>
+                            ))}
+                        </div>
+                        <button className="books-page" onClick={() => setPage(page + 1)} type="button" disabled={page === totalPages}>
+                            Next
+                        </button>
                     </nav>
                 )}
             </div>
-        </div>
+        </section>
     );
 };
 

@@ -1,0 +1,89 @@
+.add-book {
+    background: var(--panel);
+    border-radius: 1rem;
+    box-shadow: var(--shadow);
+}
+
+.add-book-body {
+    padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.add-book-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 1.25rem;
+}
+
+.add-book-title {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.add-book-subtitle {
+    margin: 0;
+    color: var(--muted);
+}
+
+.add-book-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.add-book-field {
+    flex: 1 1 220px;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.add-book-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.add-book-input {
+    border: 1px solid rgba(148, 163, 184, 0.6);
+    border-radius: 0.75rem;
+    padding: 0.65rem 0.75rem;
+    font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: var(--ink);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.add-book-input:focus {
+    outline: none;
+    border-color: rgba(29, 78, 216, 0.7);
+    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.15);
+}
+
+.add-book-action {
+    justify-content: flex-end;
+}
+
+.add-book-button {
+    border: none;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(120deg, #2563eb, #1d4ed8);
+    box-shadow: 0 12px 25px rgba(37, 99, 235, 0.25);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.add-book-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 18px 30px rgba(37, 99, 235, 0.3);
+}
+
+.react-datepicker-wrapper,
+.react-datepicker__input-container {
+    width: 100%;
+}

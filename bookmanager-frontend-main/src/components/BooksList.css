@@ -1,0 +1,122 @@
+.books {
+    background: var(--panel);
+    border-radius: 1rem;
+    box-shadow: var(--shadow);
+}
+
+.books-body {
+    padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.books-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 1.25rem;
+}
+
+.books-title {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.books-subtitle {
+    margin: 0;
+    color: var(--muted);
+}
+
+.books-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.books-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 560px;
+}
+
+.books-table thead th {
+    text-align: left;
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+    font-size: 0.95rem;
+}
+
+.books-table tbody td {
+    padding: 0.85rem 0.5rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+    font-size: 0.95rem;
+}
+
+.books-table tbody tr:hover {
+    background-color: rgba(226, 232, 240, 0.4);
+}
+
+.books-sort {
+    border: none;
+    background: none;
+    color: var(--ink);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.95rem;
+}
+
+.books-sort:hover {
+    color: var(--accent);
+}
+
+.books-empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 2rem 0.5rem;
+}
+
+.books-pagination {
+    margin-top: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.books-page-list {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.books-page {
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    background: #fff;
+    color: var(--ink);
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.6rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.books-page:hover {
+    border-color: rgba(29, 78, 216, 0.6);
+    color: var(--accent);
+}
+
+.books-page:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.books-page.is-active {
+    border-color: transparent;
+    background: rgba(29, 78, 216, 0.1);
+    color: var(--accent);
+}
+
+@media (max-width: 700px) {
+    .books-pagination {
+        justify-content: center;
+    }
+}

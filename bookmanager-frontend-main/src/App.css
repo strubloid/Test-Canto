@@ -7,10 +7,15 @@
 }
 
 .app-center {
-    width: 100%;
+    width: min(1100px, 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
 .app-hero {
+    text-align: center;
+    padding: clamp(1.5rem, 2vw, 2.75rem);
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(59, 130, 246, 0.18));
     border: 1px solid rgba(148, 163, 184, 0.4);
     border-radius: 1.25rem;
@@ -18,34 +23,20 @@
     backdrop-filter: blur(8px);
 }
 
+.app-title {
+    font-size: clamp(2rem, 3vw, 3rem);
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+}
+
+.app-subtitle {
+    margin: 0;
+    color: var(--muted);
+    font-size: clamp(1rem, 1.5vw, 1.25rem);
+}
+
 .app-content {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-}
-
-.add-book-card,
-.table-card {
-    background: var(--panel);
-    border-radius: 1rem;
-    box-shadow: var(--shadow);
-}
-
-.add-book-fields {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-.add-book-field {
-    flex: 1 1 220px;
-    min-width: 200px;
-}
-
-.table thead th button {
-    color: var(--ink);
-}
-
-.table thead th button:hover {
-    color: var(--accent);
 }

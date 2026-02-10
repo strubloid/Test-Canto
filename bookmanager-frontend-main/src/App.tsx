@@ -26,10 +26,10 @@ const App: React.FC = () => {
 
     return (
         <div className="app-shell">
-            <div className="app-center container">
-                <header className="app-hero text-center p-4 p-md-5 mb-4">
-                    <h1 className="display-5 fw-bold mb-2">Book Management</h1>
-                    <p className="lead text-muted mb-0">Track, add, and sort your library in one place.</p>
+            <div className="app-center">
+                <header className="app-hero">
+                    <h1 className="app-title">Book Management</h1>
+                    <p className="app-subtitle">Track, add, and sort your library in one place.</p>
                 </header>
 
                 <div className="app-content">
