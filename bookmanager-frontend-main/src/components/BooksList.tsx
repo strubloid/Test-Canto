@@ -154,27 +154,27 @@ const BooksList = () => {
         return result;
     };
 
-    // const toInputDate = (value: string) => {
-    //     if (!value) {
-    //         return "";
-    //     }
+    /**
+     * This will do a basic formatting to the date string
+     * to ensure that we are showing only the date part.
+     * @param value the date string to format
+     * @returns a formatted date string or the original value if invalid
+     */
+    const toInputDate = (value: string) => {
+        // first validation if the value exists
+        if (!value) {
+            return "";
+        }
 
-    //     return value.length >= 10 ? value.substring(0, 10) : value;
-    // };
+        return value.length >= 10 ? value.substring(0, 10) : value;
+    };
 
     const startEdit = (book: Book) => {
         setEditingId(book.id);
         setEditTitle(book.title);
         setEditAuthor(book.authorName);
 
-        // checking if the date exists
-        if (!book.publishedDate) {
-            setEditPublishedDate("");
-        } else {
-            // getting the date object and adding to the publish date
-            const publishedDateData = new Date(book.publishedDate!);
-            setEditPublishedDate(publishedDateData.toISOString());
-        }
+        setEditPublishedDate(toInputDate(book.publishedDate));
     };
 
     /**
@@ -213,11 +213,13 @@ const BooksList = () => {
      */
     const saveEdit = async (id: number) => {
         try {
+            // basic validation to ensure we can update the book
             if (!editTitle || !editAuthor || !editPublishedDate) {
                 alert("Please fill in all fields before saving.");
                 return;
             }
 
+            // updating the book
             const updatedBook = await updateBook({
                 id,
                 title: editTitle.trim(),
@@ -288,61 +290,64 @@ const BooksList = () => {
                                         pageBooks.map((book) => (
                                             <tr key={book.id}>
                                                 <td>{book.id}</td>
-                                                <td>{book.title}</td>
-                                                <td>{book.authorName}</td>
-                                                <td>{formatDate(book.publishedDate)}</td>
-                                                <td className="books-actions">
+                                                <td>
                                                     {editingId === book.id ? (
-                                                        <div className="books-editor">
-                                                            <label className="books-editor-label" htmlFor={`edit-title-${book.id}`}>
-                                                                Title
-                                                            </label>
-                                                            <input
-                                                                id={`edit-title-${book.id}`}
-                                                                className="books-editor-input"
-                                                                type="text"
-                                                                value={editTitle}
-                                                                onChange={(event) => setEditTitle(event.target.value)}
-                                                            />
-                                                            <label className="books-editor-label" htmlFor={`edit-author-${book.id}`}>
-                                                                Author
-                                                            </label>
-                                                            <input
-                                                                id={`edit-author-${book.id}`}
-                                                                className="books-editor-input"
-                                                                type="text"
-                                                                value={editAuthor}
-                                                                onChange={(event) => setEditAuthor(event.target.value)}
-                                                            />
-                                                            <label className="books-editor-label" htmlFor={`edit-date-${book.id}`}>
-                                                                Published
-                                                            </label>
-                                                            <input
-                                                                id={`edit-date-${book.id}`}
-                                                                className="books-editor-input"
-                                                                type="date"
-                                                                value={editPublishedDate}
-                                                                onChange={(event) => setEditPublishedDate(event.target.value)}
-                                                            />
-                                                            <div className="books-editor-actions">
+                                                        <input
+                                                            className="books-inline-input"
+                                                            type="text"
+                                                            value={editTitle}
+                                                            onChange={(event) => setEditTitle(event.target.value)}
+                                                        />
+                                                    ) : (
+                                                        book.title
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    {editingId === book.id ? (
+                                                        <input
+                                                            className="books-inline-input"
+                                                            type="text"
+                                                            value={editAuthor}
+                                                            onChange={(event) => setEditAuthor(event.target.value)}
+                                                        />
+                                                    ) : (
+                                                        book.authorName
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    {editingId === book.id ? (
+                                                        <input
+                                                            className="books-inline-input"
+                                                            type="date"
+                                                            value={editPublishedDate}
+                                                            onChange={(event) => setEditPublishedDate(event.target.value)}
+                                                        />
+                                                    ) : (
+                                                        formatDate(book.publishedDate)
+                                                    )}
+                                                </td>
+                                                <td className="books-actions">
+                                                    <div className={`books-actions-buttons ${editingId === book.id ? "is-editing" : ""}`}>
+                                                        {editingId === book.id ? (
+                                                            <>
                                                                 <button className="books-save" type="button" onClick={() => saveEdit(book.id)}>
                                                                     Save
                                                                 </button>
                                                                 <button className="books-cancel" type="button" onClick={cancelEdit}>
                                                                     Cancel
                                                                 </button>
-                                                            </div>
-                                                        </div>
-                                                    ) : (
-                                                        <div className="books-actions-buttons">
-                                                            <button className="books-edit" type="button" onClick={() => startEdit(book)} disabled={editingId !== null}>
-                                                                Edit
-                                                            </button>
-                                                            <button className="books-delete" type="button" onClick={() => deleteButtonAction(book.id)}>
-                                                                Delete
-                                                            </button>
-                                                        </div>
-                                                    )}
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <button className="books-edit" type="button" onClick={() => startEdit(book)} disabled={editingId !== null}>
+                                                                    Edit
+                                                                </button>
+                                                                <button className="books-delete" type="button" onClick={() => deleteButtonAction(book.id)}>
+                                                                    Delete
+                                                                </button>
+                                                            </>
+                                                        )}
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))
