@@ -149,7 +149,7 @@ const BooksList = () => {
 
         // parsing the date and checking if is valid to format it or just return the original
         const parsed = new Date(value);
-        result = Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleDateString();
+        result = Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleDateString("en-GB");
 
         return result;
     };
