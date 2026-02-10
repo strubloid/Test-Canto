@@ -1,38 +1,51 @@
-.App {
-    text-align: center;
-}
-
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
-}
-
-.App-header {
-    background-color: #282c34;
+.app-shell {
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+    padding: 1.5rem;
 }
 
-.App-link {
-    color: #61dafb;
+.app-center {
+    width: 100%;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.app-hero {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(59, 130, 246, 0.18));
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    border-radius: 1.25rem;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(8px);
+}
+
+.app-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.add-book-card,
+.table-card {
+    background: var(--panel);
+    border-radius: 1rem;
+    box-shadow: var(--shadow);
+}
+
+.add-book-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.add-book-field {
+    flex: 1 1 220px;
+    min-width: 200px;
+}
+
+.table thead th button {
+    color: var(--ink);
+}
+
+.table thead th button:hover {
+    color: var(--accent);
 }

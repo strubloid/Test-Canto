@@ -4,6 +4,7 @@ import { setBooks } from "./features/bookReducer";
 import BooksList from "./components/BooksList";
 import AddBook from "./components/AddBook";
 import { fetchBooks } from "./api/api";
+import "./App.css";
 
 const App: React.FC = () => {
     const dispatch = useDispatch();
@@ -24,10 +25,18 @@ const App: React.FC = () => {
     }, [dispatch]);
 
     return (
-        <div>
-            <h1>Book Management</h1>
-            <AddBook />
-            <BooksList />
+        <div className="app-shell">
+            <div className="app-center container">
+                <header className="app-hero text-center p-4 p-md-5 mb-4">
+                    <h1 className="display-5 fw-bold mb-2">Book Management</h1>
+                    <p className="lead text-muted mb-0">Track, add, and sort your library in one place.</p>
+                </header>
+
+                <div className="app-content">
+                    <AddBook />
+                    <BooksList />
+                </div>
+            </div>
         </div>
     );
 };

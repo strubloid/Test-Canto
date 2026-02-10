@@ -56,6 +56,7 @@ const AddBook = () => {
                 authorName: author,
                 publishedDate: publishedDateString,
             };
+
             // calling the backend
             const newBook = await createBook(book);
 
@@ -73,12 +74,35 @@ const AddBook = () => {
     };
 
     return (
-        <div>
-            <h2>Add Book</h2>
-            <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
-            <input type="text" placeholder="Author" value={author} onChange={(e) => setAuthor(e.target.value)} />
-            <DatePicker placeholderText="Published Date" selected={publishedDate} onChange={(date: Date | null) => setPublishedDate(date)} />
-            <button onClick={handleAddBook}>Add</button>
+        <div className="card add-book-card border-0">
+            <div className="card-body">
+                <div className="d-flex flex-column flex-md-row align-items-start justify-content-between gap-2 mb-3">
+                    <div>
+                        <h2 className="h4 mb-1">Add Book</h2>
+                        <p className="text-muted mb-0">Create a new entry for your library.</p>
+                    </div>
+                </div>
+
+                <div className="add-book-fields">
+                    <div className="add-book-field">
+                        <label className="form-label">Title</label>
+                        <input className="form-control" type="text" placeholder="e.g. The Great Gatsby" value={title} onChange={(e) => setTitle(e.target.value)} />
+                    </div>
+                    <div className="add-book-field">
+                        <label className="form-label">Author</label>
+                        <input className="form-control" type="text" placeholder="e.g. F. Scott Fitzgerald" value={author} onChange={(e) => setAuthor(e.target.value)} />
+                    </div>
+                    <div className="add-book-field">
+                        <label className="form-label">Published Date</label>
+                        <DatePicker className="form-control" placeholderText="Select a date" selected={publishedDate} onChange={(date: Date | null) => setPublishedDate(date)} />
+                    </div>
+                    <div className="add-book-field d-flex align-items-end">
+                        <button className="btn btn-primary w-100" onClick={handleAddBook}>
+                            Add Book
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
