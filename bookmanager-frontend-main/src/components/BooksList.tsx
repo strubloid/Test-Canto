@@ -1,7 +1,8 @@
 import React, { useEffect, useId, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { Book } from "../features/bookReducer";
+import { Book, deleteBook as deleteBookAction } from "../features/bookReducer";
+import { deleteBook } from "../api/api";
 import CollapseIndicator from "./CollapseIndicator";
 import "./BooksList.css";
 
@@ -21,6 +22,7 @@ type SortKey = "id" | "title" | "authorName" | "publishedDate";
  */
 const BooksList = () => {
     // we get the list of books from the Redux store
+    const dispatch = useDispatch();
     const books = useSelector((state: RootState) => state.books.books);
     const contentId = useId();
     const [isOpen, setIsOpen] = useState(true);
@@ -43,7 +45,7 @@ const BooksList = () => {
             let result = 0;
 
             // checking for the sort key and sorting accordingly
-            if (sortKey == "publishedDate") {
+            if (sortKey === "publishedDate") {
                 const timeA = Date.parse(bookA.publishedDate);
                 const timeB = Date.parse(bookB.publishedDate);
                 result = timeA - timeB;
@@ -136,6 +138,22 @@ const BooksList = () => {
         return result;
     };
 
+    /**
+     * This will be responsible for handling the delete action by calling the backend to delete the book
+     * and then dispatching the action to delete the book from the Redux store.
+     * @param id the id of the book to delete
+     */
+    const deleteButtonAction = async (id: number) => {
+        try {
+            // calling the backend to delete the book
+            await deleteBook(id);
+            dispatch(deleteBookAction(id));
+        } catch (error) {
+            const message = error instanceof Error ? error.message : "Failed to delete book";
+            alert(message);
+        }
+    };
+
     return (
         <section className="books">
             <div className="books-body">
@@ -177,12 +195,13 @@ const BooksList = () => {
                                                 Published{sortIndicator("publishedDate")}
                                             </button>
                                         </th>
+                                        <th scope="col" className="books-actions" aria-label="Book actions" />
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {pageBooks.length === 0 ? (
                                         <tr>
-                                            <td colSpan={4} className="books-empty">
+                                            <td colSpan={5} className="books-empty">
                                                 No books yet. Add your first one above.
                                             </td>
                                         </tr>
@@ -193,6 +212,11 @@ const BooksList = () => {
                                                 <td>{book.title}</td>
                                                 <td>{book.authorName}</td>
                                                 <td>{formatDate(book.publishedDate)}</td>
+                                                <td className="books-actions">
+                                                    <button className="books-delete" type="button" onClick={() => deleteButtonAction(book.id)}>
+                                                        Delete
+                                                    </button>
+                                                </td>
                                             </tr>
                                         ))
                                     )}
