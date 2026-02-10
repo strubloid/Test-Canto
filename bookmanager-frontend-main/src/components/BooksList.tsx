@@ -267,7 +267,7 @@ const BooksList = () => {
         <section className="books">
             <div className="books-body">
                 <div className="books-header">
-                    <div>
+                    <div className="books-header-main">
                         <button type="button" className="books-toggle" aria-expanded={isOpen} aria-controls={contentId} onClick={() => setIsOpen((prev) => !prev)}>
                             <span className="books-title">Books</span>
                             <CollapseIndicator isOpen={isOpen} />
@@ -275,6 +275,8 @@ const BooksList = () => {
                         <p className="books-subtitle">
                             Showing {showingFrom}-{showingTo} of {sortedBooks.length}
                         </p>
+                    </div>
+                    <div className="books-header-filter">
                         <div className="books-filters">
                             <label className="books-filter" htmlFor={filterId}>
                                 <span className="books-filter-label">Filter by date</span>

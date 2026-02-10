@@ -10,8 +10,22 @@
 
 .books-header {
     display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.books-header-main {
+    display: flex;
     flex-direction: column;
     gap: 0.35rem;
+}
+
+.books-header-filter {
+    display: flex;
+    justify-content: flex-end;
+    flex: 1 1 auto;
 }
 
 .books-title {
@@ -38,7 +52,6 @@
 }
 
 .books-filters {
-    margin-top: 0.85rem;
     display: flex;
     align-items: flex-end;
     gap: 0.75rem;
@@ -300,6 +313,18 @@
 }
 
 @media (max-width: 700px) {
+    .books-header {
+        align-items: stretch;
+    }
+
+    .books-header-filter {
+        justify-content: flex-start;
+    }
+
+    .books-filters {
+        margin-top: 0.65rem;
+    }
+
     .books-pagination {
         justify-content: center;
     }
