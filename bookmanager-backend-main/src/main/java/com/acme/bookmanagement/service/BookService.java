@@ -176,13 +176,13 @@ public class BookService {
             // trying to load the book to delete
             Book bookToDelete = findById(id);
 
-            // doing the deletion itself
-            bookRepository.delete(bookToDelete);
-
             // if we cant find the book to delete, we throw an exception
             if(bookToDelete == null) {
                 throw new IllegalArgumentException("Book not found");
             }
+
+            // doing the deletion itself
+            bookRepository.delete(bookToDelete);
 
             return bookToDelete;
         } catch (DataAccessException e) {
