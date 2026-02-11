@@ -1,6 +1,6 @@
 import { Book } from '../features/bookReducer';
 
-const GRAPHQL_URL = 'http://localhost:8080/graphql';
+const GRAPHQL_URL = process.env.REACT_APP_GRAPHQL_URL || 'http://localhost:8080/graphql';
 
 type CreateBookInput = {
     id: number;
