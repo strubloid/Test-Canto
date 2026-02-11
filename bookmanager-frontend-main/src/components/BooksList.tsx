@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { Book, deleteBook as deleteBookAction, updateBook as updateBookAction } from "../features/bookReducer";
 import { deleteBook, updateBook } from "../api/api";
+import { useError } from "../context/ErrorContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import CollapseIndicator from "./CollapseIndicator";
@@ -34,6 +35,7 @@ const BooksList = () => {
     const [editPublishedDate, setEditPublishedDate] = useState("");
     const filterId = useId();
     const [filterDate, setFilterDate] = useState("");
+    const { setError } = useError();
 
     // sort key and direction state
     const [sortKey, setSortKey] = useState<SortKey>("title");
@@ -263,7 +265,7 @@ const BooksList = () => {
             dispatch(deleteBookAction(id));
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to delete book";
-            alert(message);
+            setError(message);
         }
     };
 
@@ -278,7 +280,7 @@ const BooksList = () => {
         try {
             // basic validation to ensure we can update the book
             if (!editTitle || !editAuthor || !editPublishedDate) {
-                alert("Please fill in all fields before saving.");
+                setError("Please fill in all fields before saving.");
                 return;
             }
 
@@ -294,7 +296,7 @@ const BooksList = () => {
             cancelEdit();
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to update book";
-            alert(message);
+            setError(message);
         }
     };
 

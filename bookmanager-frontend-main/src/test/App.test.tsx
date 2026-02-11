@@ -3,6 +3,7 @@ import { screen, waitFor } from "@testing-library/react";
 import { render } from "@testing-library/react/pure";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
+import { ErrorProvider } from "../context/ErrorContext";
 import App from "../App";
 import booksReducer from "../features/bookReducer";
 import { fetchBooks } from "../api/api";
@@ -30,7 +31,9 @@ describe("App", () => {
         await act(async () => {
             render(
                 <Provider store={store}>
-                    <App />
+                    <ErrorProvider>
+                        <App />
+                    </ErrorProvider>
                 </Provider>,
             );
         });

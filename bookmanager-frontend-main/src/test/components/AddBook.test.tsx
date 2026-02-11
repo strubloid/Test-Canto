@@ -1,6 +1,7 @@
 import { createBook } from "../../api/api";
 import React, { act } from "react";
 import { Provider } from "react-redux";
+import { ErrorProvider } from "../../context/ErrorContext";
 import AddBook from "../../components/AddBook";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import { configureStore } from "@reduxjs/toolkit";
@@ -59,7 +60,9 @@ describe("AddBook", () => {
         await act(async () => {
             const utils = render(
                 <Provider store={store}>
-                    <AddBook />
+                    <ErrorProvider>
+                        <AddBook />
+                    </ErrorProvider>
                 </Provider>,
             );
             getByPlaceholderText = utils.getByPlaceholderText;

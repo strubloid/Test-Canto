@@ -2,6 +2,7 @@ import React, { useId, useState } from "react";
 import { useDispatch } from "react-redux";
 import { addBook } from "../features/bookReducer";
 import { createBook } from "../api/api";
+import { useError } from "../context/ErrorContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import CollapseIndicator from "./CollapseIndicator";
@@ -14,6 +15,7 @@ const AddBook = () => {
     const [title, setTitle] = useState("");
     const [author, setAuthor] = useState("");
     const [publishedDate, setPublishedDate] = useState<Date | null>(null);
+    const { setError } = useError();
 
     /**
      * Validation function to ensure that all required
@@ -73,7 +75,7 @@ const AddBook = () => {
             setPublishedDate(null);
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to add book";
-            alert(message);
+            setError(message);
         }
     };
 

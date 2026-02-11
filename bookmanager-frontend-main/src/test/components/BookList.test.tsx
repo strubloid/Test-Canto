@@ -4,6 +4,7 @@ import { RootState } from "../../store";
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { render } from "@testing-library/react/pure";
 import { Provider } from "react-redux";
+import { ErrorProvider } from "../../context/ErrorContext";
 import BooksList from "../../components/BooksList";
 import booksReducer from "../../features/bookReducer";
 import { deleteBook, updateBook } from "../../api/api";
@@ -47,7 +48,9 @@ describe("BooksList", () => {
         act(() => {
             render(
                 <Provider store={store}>
-                    <BooksList />
+                    <ErrorProvider>
+                        <BooksList />
+                    </ErrorProvider>
                 </Provider>,
             );
         });
@@ -69,7 +72,9 @@ describe("BooksList", () => {
         act(() => {
             render(
                 <Provider store={store}>
-                    <BooksList />
+                    <ErrorProvider>
+                        <BooksList />
+                    </ErrorProvider>
                 </Provider>,
             );
         });
@@ -107,7 +112,6 @@ describe("BooksList", () => {
      * the API was called with the correct parameters.
      */
     it("calls delete on delete click", async () => {
-
         // creating a mocked response for the deleteBook API
         (deleteBook as jest.Mock).mockResolvedValue(1);
 
@@ -115,7 +119,9 @@ describe("BooksList", () => {
         act(() => {
             render(
                 <Provider store={store}>
-                    <BooksList />
+                    <ErrorProvider>
+                        <BooksList />
+                    </ErrorProvider>
                 </Provider>,
             );
         });

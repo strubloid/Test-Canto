@@ -3,11 +3,14 @@ import { useDispatch } from "react-redux";
 import { setBooks } from "./features/bookReducer";
 import BooksList from "./components/BooksList";
 import AddBook from "./components/AddBook";
+import ErrorMessage from "./components/ErrorMessage";
+import { useError } from "./context/ErrorContext";
 import { fetchBooks } from "./api/api";
 import "./App.css";
 
 const App: React.FC = () => {
     const dispatch = useDispatch();
+    const { error, setError, clearError } = useError();
 
     useEffect(() => {
         const loadBooks = async () => {
@@ -16,8 +19,8 @@ const App: React.FC = () => {
                 const books = await fetchBooks();
                 dispatch(setBooks(books));
             } catch (error) {
-                // TODO: Add error message ui
-                console.error("Error loading books:", error);
+                const message = error instanceof Error ? error.message : "Failed to load books";
+                setError(message);
             }
         };
 
@@ -33,6 +36,7 @@ const App: React.FC = () => {
                 </header>
 
                 <div className="app-content">
+                    <ErrorMessage message={error} onClose={clearError} />
                     <AddBook />
                     <BooksList />
                 </div>
