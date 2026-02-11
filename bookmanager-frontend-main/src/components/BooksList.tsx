@@ -17,10 +17,9 @@ type SortKey = "id" | "title" | "authorName" | "publishedDate";
  * we will be able to:
  * 1 - Display the list of books with their title, author and published date.
  * 2 - We will be able to sort the list of books by title, author and published date.
- * 3 - We will be able to filter the list of books by title, author and published date.
- * 4 - We will be able to search the list of books by title, author and published date.
- * 5 - We will be able to delete a book from the list of books.
- * 6 - We will be able to edit a book from the list of books.
+ * 3 - We will be able to filter the list of books by published date.
+ * 4 - We will be able to delete a book from the list of books.
+ * 5 - We will be able to edit a book from the list of books.
  * @returns
  */
 const BooksList = () => {
